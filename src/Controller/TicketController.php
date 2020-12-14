@@ -16,8 +16,22 @@ class TicketController extends AbstractController
      */
     public function index(): Response
     {
+        $tickets = $this->getDoctrine()->getRepository(Ticket::class)
+            ->findAll();
+
         return $this->render('ticket/index.html.twig', [
             'controller_name' => 'TicketController',
+            'tickets' => $tickets
+        ]);
+    }
+
+    /**
+     * @Route("/ticket/{id}", name="ticket.view")
+     */
+    public function view(Ticket $ticket): Response
+    {
+        return $this->render('ticket/view.html.twig', [
+            'ticket' => $ticket
         ]);
     }
 
@@ -77,4 +91,6 @@ class TicketController extends AbstractController
         return new Response('crated');
 
     }
+
+
 }
