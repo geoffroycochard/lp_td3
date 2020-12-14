@@ -63,6 +63,7 @@ class TicketController extends AbstractController
         $em->flush();
 
         // Assign users to existing tickets
+
         $tickets = $this->getDoctrine()->getRepository(Ticket::class)->findAll();
         /** @var Ticket $ticket */
         foreach ($tickets as $ticket) {
