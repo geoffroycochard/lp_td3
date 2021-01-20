@@ -41,9 +41,40 @@ class TicketController extends AbstractController
         ]);
     }
 
+    /**
+     * @param Request $request
+     * @return Response
+     *
+     * @Route("/ticket/new")
+     */
+    public function new(Request $request): Response
+    {
+        $form = $this->createForm(TicketType::class);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $ticket = $form->getData();
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($ticket);
+            $em->flush();
+            return $this->redirectToRoute('ticket.view', [
+                'id' => $ticket->getId()
+            ]);
+        }
+
+
+        return $this->render('ticket/edit.html.twig', [
+            'form' => $form->createView()
+        ]);
+
+    }
 
     /**
-     * @Route("/ticket/{id}/edit", name="ticket.edit")
+     * @param Request $request
+     * @return Response
+     *
+     * @Route("/ticket/{id}/edit")
      */
     public function edit(Ticket $ticket, Request $request): Response
     {
@@ -51,43 +82,78 @@ class TicketController extends AbstractController
 
         $form->handleRequest($request);
 
-        if($form->isSubmitted() && $form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid()) {
             $ticket = $form->getData();
             $em = $this->getDoctrine()->getManager();
             $em->persist($ticket);
             $em->flush();
-            return $this->redirectToRoute('ticket.view', ['id' => $ticket->getId()]);
+            return $this->redirectToRoute('ticket.view', [
+                'id' => $ticket->getId()
+            ]);
         }
 
-        return $this->render('ticket/edit.html.twig', [
-            'form' => $form->createView()
-        ]);
-    }
-
-    /**
-     * @Route("/ticket/new")
-     */
-    public function new(Request $request)
-    {
-        $form = $this->createForm(TicketType::class);
-
-        $form->handleRequest($request);
-
-        if($form->isSubmitted() && $form->isValid()) {
-            dump($form->getData());
-            $ticket = $form->getData();
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($ticket);
-            $em->flush();
-            return $this->redirectToRoute('ticket.view', ['id' => $ticket->getId()]);
-        }
 
         return $this->render('ticket/edit.html.twig', [
             'form' => $form->createView()
         ]);
 
-
     }
+
+
+
+
+
+
+
+
+
+//
+//    /**
+//     * @Route("/ticket/{id}/edit", name="ticket.edit")
+//     */
+//    public function edit(Ticket $ticket, Request $request): Response
+//    {
+//        $form = $this->createForm(TicketType::class, $ticket);
+//
+//        $form->handleRequest($request);
+//
+//        if($form->isSubmitted() && $form->isValid()) {
+//            $ticket = $form->getData();
+//            $em = $this->getDoctrine()->getManager();
+//            $em->persist($ticket);
+//            $em->flush();
+//            return $this->redirectToRoute('ticket.view', ['id' => $ticket->getId()]);
+//        }
+//
+//        return $this->render('ticket/edit.html.twig', [
+//            'form' => $form->createView()
+//        ]);
+//    }
+//
+//    /**
+//     * @Route("/ticket/new")
+//     */
+//    public function new(Request $request)
+//    {
+//        $form = $this->createForm(TicketType::class);
+//
+//        $form->handleRequest($request);
+//
+//        if($form->isSubmitted() && $form->isValid()) {
+//            dump($form->getData());
+//            $ticket = $form->getData();
+//            $em = $this->getDoctrine()->getManager();
+//            $em->persist($ticket);
+//            $em->flush();
+//            return $this->redirectToRoute('ticket.view', ['id' => $ticket->getId()]);
+//        }
+//
+//        return $this->render('ticket/edit.html.twig', [
+//            'form' => $form->createView()
+//        ]);
+//
+//
+//    }
 
     /**
      * @return Response

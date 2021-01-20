@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello TicketController!{% endblock %}
+{% block title %}Hello ContactController!{% endblock %}
 
 {% block body %}
 <style>
@@ -9,13 +9,12 @@
 </style>
 
 <div class="example-wrapper">
+    <h1>Hello {{ controller_name }}! ✅</h1>
 
     {{ form_start(form) }}
     {{ form_widget(form) }}
-    <input type="submit" value="GO ✅">
+    <input type="submit" value="go">
     {{ form_end(form) }}
-
-
 
 </div>
 {% endblock %}
