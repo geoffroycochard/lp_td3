@@ -5,9 +5,15 @@ namespace App\Controller;
 use App\Entity\Category;
 use App\Entity\Ticket;
 use App\Entity\User;
+use App\Form\TicketType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\FormFactoryInterface;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class TicketController extends AbstractController
 {
@@ -26,13 +32,27 @@ class TicketController extends AbstractController
     }
 
     /**
-     * @Route("/ticket/{id}", name="ticket.view")
+     * @Route("/ticket/{id}/view", name="ticket.view")
      */
     public function view(Ticket $ticket): Response
     {
         return $this->render('ticket/view.html.twig', [
             'ticket' => $ticket
         ]);
+    }
+
+    /**
+     * @Route("/ticket/new")
+     */
+    public function new()
+    {
+        $form = $this->createForm(TicketType::class);
+
+        if($form->isSubmitted() && $form->isValid()) {
+            dump($form->getData());
+        }
+
+
     }
 
     /**
@@ -53,7 +73,6 @@ class TicketController extends AbstractController
         $em = $this->getDoctrine()->getManager();
         $em->persist($ticket);
         $em->flush();
-
 
         return new Response('ticket created');
 
@@ -89,6 +108,59 @@ class TicketController extends AbstractController
         $em->flush();
 
         return new Response('crated');
+
+    }
+
+    /**
+     * @return Response
+     *
+     * @Route("/validate")
+     */
+    public function validate(ValidatorInterface $validator): Response
+    {
+        $user = (new User());
+
+        $violations = $validator->validate($user);
+
+        dump($violations);
+
+        die();
+
+
+    }
+
+
+    /**
+     * @param FormFactoryInterface $factory
+     * @return Response
+     *
+     * @Route("/contact")
+     */
+    public function contact(FormFactoryInterface $factory, Request $request)
+    {
+        $builder = $factory->createBuilder();
+        $builder
+            ->add('name', TextType::class)
+            ->add('message', TextareaType::class)
+        ;
+
+        $form = $builder->getForm();
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted()) {
+            dump($form->getData()); die();
+        }
+
+//        dump($form->isSubmitted());
+
+
+
+        //dump($form->isValid());
+//        die();
+        return $this->render('ticket/contact.html.twig', [
+            'form' => $form->createView()
+        ]);
 
     }
 
