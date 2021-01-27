@@ -32,6 +32,11 @@ class User
      */
     private $tickets;
 
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $email;
+
     public function __construct()
     {
         $this->tickets = new ArrayCollection();
@@ -83,6 +88,18 @@ class User
         if ($this->tickets->removeElement($ticket)) {
             $ticket->removeUser($this);
         }
+
+        return $this;
+    }
+
+    public function getEmail(): ?string
+    {
+        return $this->email;
+    }
+
+    public function setEmail(?string $email): self
+    {
+        $this->email = $email;
 
         return $this;
     }
