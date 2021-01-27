@@ -57,8 +57,6 @@ class TicketController extends AbstractController
             /** @var Ticket $ticket */
             $ticket = $form->getData();
             $em = $this->getDoctrine()->getManager();
-            $ticket->setUpdatedAt(new DateTime());
-            $ticket->setCreatedAt(new \DateTime());
             $em->persist($ticket);
             $em->flush();
             return $this->redirectToRoute('ticket.view', [
@@ -88,7 +86,6 @@ class TicketController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $ticket = $form->getData();
             $em = $this->getDoctrine()->getManager();
-            $ticket->setUpdatedAt(new DateTime());
             $em->persist($ticket);
             $em->flush();
             return $this->redirectToRoute('ticket.view', [
