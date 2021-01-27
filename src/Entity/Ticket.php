@@ -3,12 +3,14 @@
 namespace App\Entity;
 
 use App\Repository\TicketRepository;
+use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass=TicketRepository::class)
+ * @ORM\HasLifecycleCallbacks()
  */
 class Ticket
 {
@@ -39,6 +41,16 @@ class Ticket
      * @ORM\ManyToMany(targetEntity=User::class, inversedBy="tickets")
      */
     private $users;
+
+    /**
+     * @ORM\Column(type="datetime", options={"default":"CURRENT_TIMESTAMP"})
+     */
+    private $createdAt;
+
+    /**
+     * @ORM\Column(type="datetime", options={"default":"CURRENT_TIMESTAMP"})
+     */
+    private $updatedAt;
 
     public function __construct()
     {
@@ -108,5 +120,45 @@ class Ticket
         $this->users->removeElement($user);
 
         return $this;
+    }
+
+    public function getCreatedAt(): ?\DateTimeInterface
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(\DateTimeInterface $createdAt): self
+    {
+        $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    public function getUpdatedAt(): ?\DateTimeInterface
+    {
+        return $this->updatedAt;
+    }
+
+    public function setUpdatedAt(\DateTimeInterface $updatedAt): self
+    {
+        $this->updatedAt = $updatedAt;
+
+        return $this;
+    }
+
+    /**
+     * @ORM\PrePersist()
+     */
+    public function onCreated()
+    {
+        $this->createdAt = $this->updatedAt = new DateTime();
+    }
+
+    /**
+     * @ORM\PreUpdate()
+     */
+    public function onUpdated()
+    {
+        $this->updatedAt = new DateTime();
     }
 }
